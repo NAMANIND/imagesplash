@@ -3,7 +3,7 @@ import { useState } from "react";
 
 export default function Home() {
   const [imageInput, setImageInput] = useState(
-    "http://localhost:3000/api/image/800/600/sunset"
+    "https://imagesplashh.vercel.app/api/image/800/600/sunset"
   );
   const [imageUrl, setImageUrl] = useState(imageInput);
 
