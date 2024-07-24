@@ -16,7 +16,6 @@ export async function GET(req) {
     });
 
     if (response.data.results.length > 0) {
-      console.log(response.data);
       const imageUrl = response.data.results[0].urls.raw;
       const modifiedUrl = `${imageUrl}&w=${width}&h=${height}&fit=crop`;
       return NextResponse.redirect(modifiedUrl);
