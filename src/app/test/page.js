@@ -24,7 +24,7 @@ function Page() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Send message to extension
-    alert("Sending connection request to " + linkedinUrl);
+
     window.postMessage(
       {
         type: "SEND_CONNECTION_REQUEST",
@@ -51,6 +51,16 @@ function Page() {
           className="bg-blue-500 text-white px-4 py-2 rounded"
         >
           Send Connection Request
+        </button>
+        // clear
+        <button
+          onClick={() => {
+            setLinkedinUrl("");
+            setStatus("");
+          }}
+          className="bg-red-500 text-white px-4 py-2 rounded"
+        >
+          Clear
         </button>
       </form>
       {status && <p className="mt-4">{status}</p>}
