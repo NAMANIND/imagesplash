@@ -24,6 +24,7 @@ function Page() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // Send message to extension
+    alert("Sending connection request to " + linkedinUrl);
     window.postMessage(
       {
         type: "SEND_CONNECTION_REQUEST",
@@ -42,7 +43,7 @@ function Page() {
           value={linkedinUrl}
           onChange={(e) => setLinkedinUrl(e.target.value)}
           placeholder="Enter LinkedIn profile URL"
-          className="border p-2 w-full mb-4"
+          className="border p-2 w-full mb-4 text-black"
           required
         />
         <button
