@@ -27,7 +27,7 @@ function Page() {
 
     window.postMessage(
       {
-        type: "SEND_CONNECTION_REQUEST",
+        type: "SEND_CONNECTION_REQUEST_WEB",
         linkedinUrl: linkedinUrl,
       },
       "*"
@@ -52,7 +52,7 @@ function Page() {
         >
           Send Connection Request
         </button>
-        // clear
+
         <button
           onClick={() => {
             setLinkedinUrl("");
