@@ -8,7 +8,7 @@ function Page() {
   useEffect(() => {
     // Listen for the response from the extension
     const messageHandler = (event) => {
-      if (event.data.type === "CONNECTION_REQUEST_RESULT") {
+      if (event.data.type === "CONNECTION_REQUEST_RESULT_WEB") {
         if (event.data.success) {
           setStatus("Connection request sent successfully!");
         } else {
@@ -46,22 +46,24 @@ function Page() {
           className="border p-2 w-full mb-4 text-black"
           required
         />
-        <button
-          type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
-        >
-          Send Connection Request
-        </button>
+        <div className="flex space-x-4 gap-4">
+          <button
+            type="submit"
+            className="bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Send Connection Request
+          </button>
 
-        <button
-          onClick={() => {
-            setLinkedinUrl("");
-            setStatus("");
-          }}
-          className="bg-red-500 text-white px-4 py-2 rounded"
-        >
-          Clear
-        </button>
+          <button
+            onClick={() => {
+              setLinkedinUrl("");
+              setStatus("");
+            }}
+            className="bg-red-500 text-white px-4 py-2 rounded"
+          >
+            Clear
+          </button>
+        </div>
       </form>
       {status && <p className="mt-4">{status}</p>}
     </div>
