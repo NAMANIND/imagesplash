@@ -48,13 +48,11 @@ function Page() {
       if (authData.success) {
         setCookies(authData.auth.cookie);
         setCsrfToken(authData.auth["csrf-token"]);
-        setStatus("Authentication data retrieved successfully!");
+        setAuthStatus("success");
       } else {
-        setStatus(`Auth Error: ${authData.error}`);
+        setAuthStatus("error");
       }
-    } catch (error) {
-      setStatus(`Auth Error: ${error.message}`);
-    }
+    } catch (error) {}
   };
 
   const handleSubmit = async (e) => {
@@ -110,13 +108,7 @@ function Page() {
         <button
           onClick={() => {
             setAuthStatus("loading");
-            getAuth().then(() => {
-              if (cookies && csrfToken) {
-                setAuthStatus("success");
-              } else {
-                setAuthStatus("error");
-              }
-            });
+            getAuth();
           }}
           className={`flex items-center gap-2 px-4 py-2 rounded mb-4 text-white
             ${authStatus === "idle" ? "bg-gray-500" : ""}
