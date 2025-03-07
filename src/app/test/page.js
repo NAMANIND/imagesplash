@@ -52,7 +52,7 @@ function Page() {
       window.postMessage(
         {
           type: "SEND_CONNECTION_REQUEST",
-          profileUrl: profileUrl,
+          profileUrl: linkedinUrl,
         },
         "*"
       );
