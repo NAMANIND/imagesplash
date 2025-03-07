@@ -1,6 +1,5 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import LinkedInBot from "@/components/LinkedinBot";
 
 function Page() {
   const [linkedinUrl, setLinkedinUrl] = useState("");
