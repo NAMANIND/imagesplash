@@ -10,7 +10,7 @@ function Page() {
 
   useEffect(() => {
     const messageHandler = (event) => {
-      if (event.data.type === "CONNECTION_REQUEST_RESULT_WEB") {
+      if (event.data.type === "CONNECTION_RESULT") {
         if (event.data.success) {
           setStatus("Connection request sent successfully!");
         } else {
