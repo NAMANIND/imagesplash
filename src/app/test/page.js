@@ -23,6 +23,40 @@ function Page() {
     return () => window.removeEventListener("message", messageHandler);
   }, []);
 
+  const getAuth = async () => {
+    try {
+      const authData = await new Promise((resolve) => {
+        window.postMessage(
+          {
+            type: "GET_AUTH_DATA",
+          },
+          "*"
+        );
+
+        function authListener(event) {
+          if (event.data.type === "AUTH_DATA_RESULT") {
+            window.removeEventListener("message", authListener);
+            resolve(event.data);
+          }
+        }
+
+        window.addEventListener("message", authListener);
+      });
+
+      console.log("Auth Data:", authData);
+
+      if (authData.success) {
+        setCookies(authData.auth.cookie);
+        setCsrfToken(authData.auth["csrf-token"]);
+        setStatus("Authentication data retrieved successfully!");
+      } else {
+        setStatus(`Auth Error: ${authData.error}`);
+      }
+    } catch (error) {
+      setStatus(`Auth Error: ${error.message}`);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -62,6 +96,16 @@ function Page() {
   return (
     <div className="p-4">
       <h1 className="text-2xl mb-4">LinkedIn Connection Request</h1>
+
+      <div className="mb-4">
+        <button
+          onClick={getAuth}
+          className="bg-green-500 text-white px-4 py-2 rounded mb-4"
+        >
+          Get Authentication Data
+        </button>
+      </div>
+
       <div className="mb-4">
         <label className="flex items-center">
           <input
