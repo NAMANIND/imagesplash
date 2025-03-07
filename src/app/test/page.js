@@ -120,7 +120,7 @@ function Page() {
           {authStatus === "loading" && (
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
           )}
-          Get Authentication Data
+          {cookies ? "Connected" : "Get Auth Data"}
         </button>
         {/* Add auth status message */}
         {authStatus === "success" && (
