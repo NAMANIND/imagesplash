@@ -61,6 +61,11 @@ function Page() {
     e.preventDefault();
 
     if (useApi) {
+      if (!cookies || !csrfToken) {
+        setStatus("Please get authentication data first!");
+        return;
+      }
+
       try {
         const result = await fetch("/api/linkedin/connect", {
           method: "POST",
@@ -68,7 +73,9 @@ function Page() {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            linkedinUrl: linkedinUrl,
+            linkedinUrl,
+            cookies,
+            csrfToken,
           }),
         });
 
@@ -77,7 +84,7 @@ function Page() {
         if (data.status === "success") {
           setStatus("API: Connection request sent successfully!");
         } else {
-          setStatus("API: Failed to send connection request");
+          setStatus(`API Error: ${data.error}`);
         }
       } catch (error) {
         setStatus(`API Error: ${error.message}`);
@@ -93,17 +100,43 @@ function Page() {
     }
   };
 
+  const [authStatus, setAuthStatus] = useState("idle"); // 'idle', 'loading', 'success', 'error'
+
   return (
     <div className="p-4">
       <h1 className="text-2xl mb-4">LinkedIn Connection Request</h1>
 
       <div className="mb-4">
         <button
-          onClick={getAuth}
-          className="bg-green-500 text-white px-4 py-2 rounded mb-4"
+          onClick={() => {
+            setAuthStatus("loading");
+            getAuth().then(() => {
+              if (cookies && csrfToken) {
+                setAuthStatus("success");
+              } else {
+                setAuthStatus("error");
+              }
+            });
+          }}
+          className={`flex items-center gap-2 px-4 py-2 rounded mb-4 text-white
+            ${authStatus === "idle" ? "bg-gray-500" : ""}
+            ${authStatus === "loading" ? "bg-gray-400" : ""}
+            ${authStatus === "success" ? "bg-green-500" : ""}
+            ${authStatus === "error" ? "bg-red-500" : ""}
+          `}
         >
+          {authStatus === "loading" && (
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          )}
           Get Authentication Data
         </button>
+        {/* Add auth status message */}
+        {authStatus === "success" && (
+          <p className="text-green-500 mt-2">Authentication successful!</p>
+        )}
+        {authStatus === "error" && (
+          <p className="text-red-500 mt-2">Authentication failed!</p>
+        )}
       </div>
 
       <div className="mb-4">
@@ -142,6 +175,7 @@ function Page() {
               setStatus("");
               setCookies("");
               setCsrfToken("");
+              setAuthStatus("idle");
             }}
             className="bg-red-500 text-white px-4 py-2 rounded"
           >
