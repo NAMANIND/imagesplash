@@ -10,31 +10,106 @@ function Page() {
 
   useEffect(() => {
     const messageHandler = (event) => {
-      if (event.data.type === "CONNECTION_RESULT") {
-        if (event.data.success) {
-          setStatus("Connection request sent successfully!");
-        } else {
-          setStatus(`Error: ${event.data.error}`);
-        }
+      // Security check - verify the sender origin if needed
+      // const allowedOrigins = ['chrome-extension://your-extension-id', 'http://localhost:3000'];
+      // if (!allowedOrigins.includes(event.origin)) return;
+
+      console.log("Received message:", event.data);
+
+      switch (event.data.type) {
+        case "CONNECTION_RESULT":
+          handleConnectionResult(event.data);
+          break;
+
+        case "GET_USER_ID":
+          handleGetUserId();
+          break;
+
+        case "GET_AUTH_DATA":
+          // If you need to handle auth data requests
+          handleAuthData();
+          break;
+
+        default:
+          console.log("Unknown message type:", event.data.type);
       }
-      if (event.data && event.data.type === "GET_USER_ID") {
-        // Simulate fetching the user ID (Replace this with actual logic)
-        const userId = "01JNZX618BH55E1HQGZ5CWB31J";
-        console.log("sending user id", userId);
-        // Send response back to the source window
+    };
+
+    const handleConnectionResult = (data) => {
+      if (data.success) {
+        setStatus("Connection request sent successfully!");
+        // Additional success handling if needed
+        // toast.success("Connection request sent!");
+      } else {
+        setStatus(`Error: ${data.error}`);
+        // Error handling
+        // toast.error(data.error);
+      }
+    };
+
+    const handleGetUserId = async () => {
+      try {
+        // You might want to get this from your auth context/state
+        const userId = await getUserIdFromContext(); // Replace with your actual method
+
+        // Add retry mechanism
+        let retryCount = 0;
+        const sendResponse = () => {
+          console.log("Sending user ID response:", userId);
+          window.postMessage(
+            {
+              type: "GET_USER_ID_RESPONSE",
+              userId: userId,
+              success: true,
+              timestamp: Date.now(), // Helpful for debugging
+            },
+            "*"
+          );
+        };
+
+        const confirmResponse = () => {
+          if (retryCount < 3) {
+            sendResponse();
+            retryCount++;
+            setTimeout(confirmResponse, 1000); // Retry every second up to 3 times
+          }
+        };
+
+        confirmResponse();
+      } catch (error) {
+        console.error("Error getting user ID:", error);
         window.postMessage(
           {
             type: "GET_USER_ID_RESPONSE",
-            userId: userId,
+            success: false,
+            error: "Failed to get user ID",
           },
           "*"
         );
       }
     };
 
+    const handleAuthData = () => {
+      // Handle auth data requests if needed
+      // Similar pattern to handleGetUserId
+    };
+
+    // Add message listener
     window.addEventListener("message", messageHandler);
-    return () => window.removeEventListener("message", messageHandler);
-  }, []);
+
+    // Cleanup
+    return () => {
+      window.removeEventListener("message", messageHandler);
+    };
+  }, []); // Empty dependency array since we don't use any external variables
+
+  // Helper function to get userId from your auth context/state
+  const getUserIdFromContext = async () => {
+    // Replace this with your actual implementation
+    // Example:
+    // return authContext.userId || localStorage.getItem('userId');
+    return "01JNZX618BH55E1HQGZ5CWB31J";
+  };
 
   const getAuth = async () => {
     try {
