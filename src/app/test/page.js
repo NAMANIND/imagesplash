@@ -22,12 +22,12 @@ function Page() {
         const userId = "01JNZX618BH55E1HQGZ5CWB31J";
         console.log("sending user id", userId);
         // Send response back to the source window
-        event.source.postMessage(
+        window.postMessage(
           {
             type: "GET_USER_ID_RESPONSE",
             userId: userId,
           },
-          event.origin
+          "*"
         );
       }
     };
