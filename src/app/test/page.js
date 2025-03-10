@@ -17,6 +17,19 @@ function Page() {
           setStatus(`Error: ${event.data.error}`);
         }
       }
+      if (event.data && event.data.type === "GET_USER_ID") {
+        // Simulate fetching the user ID (Replace this with actual logic)
+        const userId = "01JNZX618BH55E1HQGZ5CWB31J";
+        console.log("sending user id", userId);
+        // Send response back to the source window
+        event.source.postMessage(
+          {
+            type: "GET_USER_ID_RESPONSE",
+            userId: userId,
+          },
+          event.origin
+        );
+      }
     };
 
     window.addEventListener("message", messageHandler);
