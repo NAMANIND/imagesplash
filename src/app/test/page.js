@@ -29,6 +29,7 @@ function Page() {
         window.postMessage(
           {
             type: "GET_AUTH_DATA",
+            userId: "01JNZX618BH55E1HQGZ5CWB31J",
           },
           "*"
         );
