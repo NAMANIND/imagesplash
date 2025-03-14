@@ -10,14 +10,14 @@ function Page() {
 
   useEffect(() => {
     const messageHandler = (event) => {
-      if (event.data.type === "CONNECTION_RESULT") {
+      if (event.data.type === "WEBSITE_CONNECTION_RESPONSE") {
         if (event.data.success) {
           setStatus("Connection request sent successfully!");
         } else {
           setStatus(`Error: ${event.data.error}`);
         }
       }
-      if (event.data && event.data.type === "GET_USER_ID") {
+      if (event.data && event.data.type === "WEBSITE_AUTH_STATUS_RESPONSE") {
         // Simulate fetching the user ID (Replace this with actual logic)
         const userId = "01JNZX618BH55E1HQGZ5CWB31J";
         console.log("sending user id", userId);
@@ -41,14 +41,14 @@ function Page() {
       const authData = await new Promise((resolve) => {
         window.postMessage(
           {
-            type: "GET_AUTH_DATA",
+            type: "WEBSITE_REQUEST_AUTH_STATUS",
             userId: "01JNZX618BH55E1HQGZ5CWB31J",
           },
           "*"
         );
 
         function authListener(event) {
-          if (event.data.type === "AUTH_DATA_RESULT") {
+          if (event.data.type === "WEBSITE_AUTH_STATUS_RESPONSE") {
             window.removeEventListener("message", authListener);
             resolve(event.data);
           }
@@ -104,7 +104,7 @@ function Page() {
     } else {
       window.postMessage(
         {
-          type: "SEND_CONNECTION_REQUEST",
+          type: "WEBSITE_REQUEST_CONNECTION",
           profileUrl: linkedinUrl,
         },
         "*"
